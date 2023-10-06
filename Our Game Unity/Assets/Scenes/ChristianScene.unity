@@ -1194,10 +1194,10 @@ GameObject:
   - component: {fileID: 2007927085}
   - component: {fileID: 2007927084}
   - component: {fileID: 2007927083}
-  - component: {fileID: 2007927088}
   - component: {fileID: 2007927087}
   - component: {fileID: 2007927089}
   - component: {fileID: 2007927090}
+  - component: {fileID: 2007927091}
   m_Layer: 6
   m_Name: Cube
   m_TagString: Player
@@ -1303,26 +1303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf572efdee5bf3d489eba67c72db2c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 15
   turnSpeed: 25
---- !u!114 &2007927088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007927082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d21597366bff9342ac0eec991549a38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sensitivityX: 2
-  sensitivityY: 2
-  minimumX: -360
-  maximumX: 360
-  minimumY: -90
-  maximumY: 90
 --- !u!20 &2007927089
 Camera:
   m_ObjectHideFlags: 0
@@ -1333,7 +1315,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1400,6 +1382,24 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2007927091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007927082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d21597366bff9342ac0eec991549a38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivityX: 2
+  sensitivityY: 2
+  minimumX: -360
+  maximumX: 360
+  minimumY: -90
+  maximumY: 90
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
