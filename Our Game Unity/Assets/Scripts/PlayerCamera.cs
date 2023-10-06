@@ -2,63 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Camera : MonoBehaviour
+public class FirstPersonCamera : MonoBehaviour
 {
+    [SerializeField] float sensitivityX = 2f;
+    [SerializeField] float sensitivityY = 2f;
+    [SerializeField] float minimumX = -360f;
+    [SerializeField] float maximumX = 360f;
+    [SerializeField] float minimumY = -90f;
+    [SerializeField] float maximumY = 90f;
 
-    //camera variables
-    [SerializeField] float turnSpeed = 90f;
-    [SerializeField] float headUpperAngleLimit = 85f;
-    [SerializeField] float headLowerAngleLimit = -80f;
+    private float rotationX = 0f;
+    private float rotationY = 0f;
+    private Quaternion originalRotation;
 
-    // Current rotation from our start, in degrees
-    float yaw = 0f;
-    float pitch = 0f;
-
-    // Orientation of head and body when game is started
-    Quaternion bodyStartOrientation;
-    Quaternion headStartOrientation;
-
-    // Rotates head camera
-    Transform head;
-
-    // Initialization processes
     void Start()
     {
-
-        // Find head camera
-        head = GetComponentInChildren<Camera>().transform;
-
-        // Caches orientation of body and head
-        bodyStartOrientation = transform.localRotation;
-        headStartOrientation = head.transform.localRotation;
-
-        // Lock and hide cursor
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        originalRotation = transform.localRotation;
     }
 
-    void FixedUpdate()
+    void Update()
     {
+        // Get mouse input
+        float mouseX = Input.GetAxis("Mouse X") * sensitivityX;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivityY;
 
-        // Read horizontal movement, and scale it based on amount of time elapsed and move speed
-        var horizontal = Input.GetAxis("Mouse X") * Time.deltaTime * turnSpeed;
-        // Same for vertical.
-        var vertical = Input.GetAxis("Mouse Y") * Time.deltaTime * turnSpeed;
+        // Calculate new rotation values
+        rotationX += mouseX;
+        rotationY -= mouseY;
 
-        // Updates our yaw and pitch values
-        yaw += horizontal;
-        pitch += vertical;
+        // Clamp rotation values to prevent over-rotation
+        rotationX = Mathf.Clamp(rotationX, minimumX, maximumX);
+        rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
 
-        // Clamp pitch so that we can't look all the way up or down.
-        pitch = Mathf.Clamp(pitch, headLowerAngleLimit, headUpperAngleLimit);
+        // Apply rotations to the GameObject
+        Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
+        Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, Vector3.right);
 
-        // Computing rotation
-        var bodyRotation = Quaternion.AngleAxis(yaw, Vector3.up);
-        var headRotation = Quaternion.AngleAxis(pitch, Vector3.right);
-
-        // Creates rotations for body and the head by combining them with their start rotations.
-        transform.localRotation = bodyRotation * bodyStartOrientation;
-        head.localRotation = headRotation * headStartOrientation;
-
+        transform.localRotation = originalRotation * xQuaternion * yQuaternion;
     }
 }
