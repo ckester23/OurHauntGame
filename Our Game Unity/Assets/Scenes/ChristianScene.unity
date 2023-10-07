@@ -1282,6 +1282,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f49a6eb96f42b43978a8499a2a2fb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wanderSpeed: 2
+  fleeSpeed: 4
+  fleeDistance: 5
+  visionDistance: 10
+  itemLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!65 &1927263448
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1406,7 +1416,6 @@ GameObject:
   - component: {fileID: 2007927089}
   - component: {fileID: 2007927090}
   - component: {fileID: 2007927091}
-  - component: {fileID: 2007927092}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1512,7 +1521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf572efdee5bf3d489eba67c72db2c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  speed: 10
   turnSpeed: 25
 --- !u!20 &2007927089
 Camera:
@@ -1609,23 +1618,6 @@ MonoBehaviour:
   maximumX: 360
   minimumY: -90
   maximumY: 90
---- !u!114 &2007927092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007927082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff8c980d1bac1df4a889d141a57a0c5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameTimeInSeconds: 120
-  currentTime: 0
-  isGameActive: 1
-  hasWon: 0
-  timerText: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
