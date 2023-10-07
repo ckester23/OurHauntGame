@@ -2,76 +2,71 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AINPC : MonoBehaviour
+public class WanderAI : MonoBehaviour
 {
-    // The AI's current state
-    private enum AIState
-    {
-        Wander,
-        Flee,
-    }
+    public float wanderSpeed = 2f;
+    public float fleeSpeed = 4f;
+    public float fleeDistance = 20f;
+    public float visionDistance = 10f;
 
-    private AIState currentState = AIState.Wander;
     private Transform player;
-    private float wanderRadius = 10f;
-    private float fleeDistance = 5f;
+    private bool isFleeing = false;
+    private Vector3 wanderTarget;
 
-    void Start()
+    private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        InvokeRepeating("UpdateAI", 1f, 1f); // Update AI every 1 second
+        // Start wandering immediately
+        SetRandomWanderTarget();
     }
 
-    void UpdateAI()
+    private void Update()
     {
-        switch (currentState)
-        {
-            case AIState.Wander:
-                Wander();
-                break;
+        if (player == null)
+            return; // Player not found, do nothing
 
-            case AIState.Flee:
-                Flee();
-                break;
+        // Calculate the distance between the AI and the player
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        if (isFleeing)
+        {
+            // Flee from the player
+            Vector3 fleeDirection = transform.position - player.position;
+            fleeDirection.y = 0f; // Ensure the AI moves only in the X-Z plane
+            transform.position += fleeDirection.normalized * fleeSpeed * Time.deltaTime;
+
+            // If the player is no longer within flee distance, stop fleeing
+            if (distanceToPlayer > fleeDistance)
+                isFleeing = false;
+        }
+        else
+        {
+            // Wander behavior
+            if (distanceToPlayer < visionDistance)
+            {
+                // Player is in sight, start fleeing
+                isFleeing = true;
+            }
+            else if (Vector3.Distance(transform.position, wanderTarget) < 1f)
+            {
+                // Reached the current wander target, set a new one
+                SetRandomWanderTarget();
+            }
+
+            // Move towards the wander target
+            Vector3 moveDirection = wanderTarget - transform.position;
+            moveDirection.y = 0f; // Ensure the AI moves only in the X-Z plane
+            transform.position += moveDirection.normalized * wanderSpeed * Time.deltaTime;
         }
     }
 
-    void Wander()
+    private void SetRandomWanderTarget()
     {
-        // Generate a random point within the wanderRadius
-        Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
-        randomDirection += transform.position;
-        UnityEngine.AI.NavMeshHit navHit;
-        UnityEngine.AI.NavMesh.SamplePosition(randomDirection, out navHit, wanderRadius, -1);
-        Vector3 targetPosition = navHit.position;
-
-        // Move towards the target position
-        GetComponent<UnityEngine.AI.NavMeshAgent>().SetDestination(targetPosition);
-
-        // Check if the player is within fleeDistance
-        if (Vector3.Distance(transform.position, player.position) < fleeDistance)
-        {
-            currentState = AIState.Flee;
-        }
-    }
-
-    void Flee()
-    {
-        // Calculate a direction away from the player
-        Vector3 fleeDirection = transform.position - player.position;
-        fleeDirection.Normalize();
-
-        // Calculate a target position to flee to
-        Vector3 targetPosition = transform.position + fleeDirection * fleeDistance;
-
-        // Move towards the target position
-        GetComponent<UnityEngine.AI.NavMeshAgent>().SetDestination(targetPosition);
-
-        // Check if the player is no longer within fleeDistance to return to wandering
-        if (Vector3.Distance(transform.position, player.position) >= fleeDistance)
-        {
-            currentState = AIState.Wander;
-        }
+        // Set a random point within a certain range as the wander target
+        float randomX = Random.Range(-20f, 20f);
+        float randomZ = Random.Range(-20f, 20f);
+        wanderTarget = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
     }
 }
+
 
