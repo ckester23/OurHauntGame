@@ -13,9 +13,12 @@ public class NewNPCScript : MonoBehaviour
     public LayerMask obstacleLayer;
     */
 
+    public Transform waypoint;
+
+    private Transform center;
+    private Transform exit;
     private Transform player;
-    private Transform waypoint;
-    public Transform center;
+    
     private bool isFleeing = false;
     private Vector3 wanderTarget;
     
@@ -24,10 +27,11 @@ public class NewNPCScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // find myself, waypoint, and player
+        // find myself and player
         agent = GetComponent<NavMeshAgent>();
-        waypoint = GameObject.FindGameObjectWithTag("Waypoint").transform;
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        center = GameObject.FindGameObjectWithTag("CenterPoint").transform;
+        exit = GameObject.FindGameObjectWithTag("Exit").transform;
 
         // Disabling auto-braking allows for continuous movement
         // between points (ie, the agent doesn't slow down as it
@@ -47,14 +51,14 @@ public class NewNPCScript : MonoBehaviour
         // select a destination
         GenerateNewWaypoint(10f);
 
-        // Set the agent to go to the currently selected destination.
+        // Set the agent to go to the destination.
         agent.destination = waypoint.position;
 
     }
 
     void Flee()
     {
-        // TODO : Select a point away from player
+        // select a point towards the exit, away from player
         GenerateNewWaypoint(0f);
     }
 
@@ -65,10 +69,11 @@ public class NewNPCScript : MonoBehaviour
 
         if (isFleeing)
         {
-            // run in opposite direction of player
-            // this will naturally bring NPC towards center of map
-            wayX = -.25f * player.position.x;
-            wayZ = -.25f * player.position.z;
+            // run towards exit
+            // cap this, so they don't just leave every time they get spooked
+            // if player does an ultimate scare, they do leave
+            wanderTarget = new Vector3(exit.position.x, transform.position.y, exit.position.z);
+
         }
         else
         {
@@ -77,8 +82,9 @@ public class NewNPCScript : MonoBehaviour
             wayZ = Random.Range(-13f, 50f);
             //wayX = Random.Range(-1f*range, range);
             //wayZ = Random.Range(-1f * range, range);
+            wanderTarget = new Vector3(center.position.x + wayX, transform.position.y, center.position.z + wayZ);
+
         }
-        wanderTarget = new Vector3(center.position.x + wayX, transform.position.y, center.position.z + wayZ);
         waypoint.position = wanderTarget;
     }
 
@@ -93,6 +99,9 @@ public class NewNPCScript : MonoBehaviour
             if (isFleeing) isFleeing = !isFleeing;
             GotoNextPoint();
         }
+
+        // TODO Check where the player is
+        // if too close, flee
             
     }
 }
